@@ -31,13 +31,13 @@ public class Controls implements KeyboardHandler {
     public void painting(int i, int j) {
         if (grid.getGrid()[i][j].isPainted()) {
             grid.getGrid()[i][j].getCell().draw();
+            grid.getGrid()[i][j].getCell().setColor(Color.BLACK);
             grid.getGrid()[i][j].setPainted(false);
         } else {
             grid.getGrid()[i][j].getCell().fill();
             grid.getGrid()[i][j].getCell().setColor(Color.BLUE);
             grid.getGrid()[i][j].setPainted(true);
         }
-
     }
 
 
@@ -100,6 +100,18 @@ public class Controls implements KeyboardHandler {
 
         kb.addEventListener(releasedSpace);
 
+        KeyboardEvent load = new KeyboardEvent();
+        load.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
+        load.setKey(KeyboardEvent.KEY_L);
+
+        kb.addEventListener(load);
+
+        KeyboardEvent save = new KeyboardEvent();
+        save.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
+        save.setKey(KeyboardEvent.KEY_S);
+
+        kb.addEventListener(save);
+
     }
 
     @Override
@@ -118,30 +130,34 @@ public class Controls implements KeyboardHandler {
                 move.up(this.cell);
                 break;
             case KeyboardEvent.KEY_A:
-                for(int i = 0; i < grid.getCol(); i++){
-                    for(int j= 0; j < grid.getRow(); j++){
-                        if(grid.getGrid()[i][j].isPainted()){
+                for (int i = 0; i < grid.getCol(); i++) {
+                    for (int j = 0; j < grid.getRow(); j++) {
+                        if (grid.getGrid()[i][j].isPainted()) {
                             grid.getGrid()[i][j].getCell().draw();
                             grid.getGrid()[i][j].getCell().setColor(Color.BLACK);
                         }
                     }
                 }
                 break;
-            case  KeyboardEvent.KEY_C:
-                for(int i = 0; i < grid.getCol(); i++){
-                    for(int j= 0; j < grid.getRow(); j++){
-                        if(grid.getGrid()[i][j].isPainted()){
+            case KeyboardEvent.KEY_C:
+                for (int i = 0; i < grid.getCol(); i++) {
+                    for (int j = 0; j < grid.getRow(); j++) {
+                        if (grid.getGrid()[i][j].isPainted()) {
                             grid.getGrid()[i][j].getCell().fill();
                             grid.getGrid()[i][j].getCell().setColor(Color.BLUE);
                         }
                     }
                 }
-                    break;
+                break;
             case KeyboardEvent.KEY_SPACE:
-                status = true;
-                if (status) {
-                    painting(cell.getCol(), cell.getRow());
-                }
+                this.status = true;
+                painting(cell.getCol(), cell.getRow());
+                break;
+            case KeyboardEvent.KEY_L:
+                this.grid.stringToGrid(FileManager.readFile());
+                break;
+            case KeyboardEvent.KEY_S:
+                FileManager.writeToFile(this.grid.toString());
                 break;
         }
     }
@@ -149,6 +165,5 @@ public class Controls implements KeyboardHandler {
     @Override
     public void keyReleased(KeyboardEvent keyboardEvent) {
         status = false;
-
     }
 }
